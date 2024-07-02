@@ -42,30 +42,39 @@ const setGenres = catchError(async (req, res) => {
   const { id } = req.params;
   const movie = await Movie.findByPk(id);
 
-  await movie.setGenres(req.body);
+  if (movie) {
+    await movie.setGenres(req.body);
+    const genres = await movie.getGenres();
+    return res.status(200).json(genres);
+  }
 
-  const genres = await movie.getGenres();
-  return res.json(genres);
+  return res.status(404).json({ error: "Movie not found!" });
 });
 
 const setActors = catchError(async (req, res) => {
   const { id } = req.params;
   const movie = await Movie.findByPk(id);
 
-  await movie.setActors(req.body);
+  if(movie){
+    await movie.setActors(req.body);
+    const actors = await movie.getActors();
+    return res.json(actors);
+  }
 
-  const actors = await movie.getActors();
-  return res.json(actors);
+  return res.status(404).json({ error: "Movie not found!" });
 });
 
 const setDirectors = catchError(async (req, res) => {
   const { id } = req.params;
   const movie = await Movie.findByPk(id);
 
-  await movie.setDirectors(req.body);
+  if(movie){
+    await movie.setDirectors(req.body);
+    const directors = await movie.getDirectors();
+    return res.json(directors);
+  }
 
-  const directors = await movie.getDirectors();
-  return res.json(directors);
+  return res.status(404).json({ error: "Movie not found!" });
 });
 
 module.exports = {
@@ -76,5 +85,5 @@ module.exports = {
   update,
   setGenres,
   setActors,
-  setDirectors
+  setDirectors,
 };
